@@ -1,4 +1,4 @@
-import types from './types';
+import types from './DashboardTypes';
 
 const open = () => ({
 	type: types.OPEN

@@ -11,18 +11,21 @@ class DashboardCard extends Component {
 		const {
 			checked,
 			actions,
-			data
+			data,
+			endpointName,
+			endpointDesc,
+			endpointVal
 		} = this.props;
 
 		return (
 			<Card className="dashboard-card">
-				<CardHeader title="Endpoint" subtitle="subtitle" />
+				<CardHeader title={endpointName} subtitle={endpointVal} />
 				<CardMedia>
 					<Doughnut data={data} />
 				</CardMedia>
 				<CardTitle title="Card title"/>
-				<CardText>Lorem ipsum
-				<Checkbox label="To check" checked={checked} onCheck={actions.check} />
+				<CardText>{endpointDesc}
+				<Checkbox label="To check" checked={checked} onCheck={actions !== null ? actions.check : null} />
 	  			{ checked ? <h2>Done</h2> : null }
 				</CardText>
 			</Card>
@@ -33,7 +36,10 @@ class DashboardCard extends Component {
 DashboardCard.propTypes = {
   checked: PropTypes.bool,
   actions: PropTypes.object,
-  data: PropTypes.object
+  data: PropTypes.object,
+  endpointName: PropTypes.string,
+  endpointDesc: PropTypes.string,
+  endpointVal: PropTypes.string
 };
 
 export default DashboardCard;

@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import reducer from './reducers';
+import reducer from './DashboardReducers';
 import actions from './DashboardActions';
 
 describe('dashboard reducer', () => {

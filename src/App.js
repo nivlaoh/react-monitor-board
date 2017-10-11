@@ -17,8 +17,9 @@ import DashboardActions from './dashboard/DashboardActions';
 import NewEndpoint from './new-endpoint/NewEndpoint';
 
 const mapStateToProps = state => ({
-  appName: state.appName,
-  open: state.open
+  appName: state.reducer.appName,
+  open: state.reducer.open,
+  cards: state.newEndpoint.cards
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -32,9 +33,22 @@ const muiTheme = getMuiTheme({
   }
 });
 
+const DashboardPage = (props) => {
+  return (
+    <Dashboard cards={props.cards}/>
+  );
+}
+
+const NewEndpointPage = (props) => {
+  return (
+    <NewEndpoint cards={props.cards}/>
+  );
+}
+
 class App extends Component {
 
   render() {
+    console.log(this.props);
     const {
       appName,
       open,
@@ -56,8 +70,8 @@ class App extends Component {
             </Menu>
           </Drawer>
           <Switch>
-            <Route exact path="/" component={Dashboard}/>
-            <Route path="/new" component={NewEndpoint}/>
+            <Route exact path="/" render={DashboardPage}/>
+            <Route path="/new" render={NewEndpointPage}/>
           </Switch>
         </div>
       </MuiThemeProvider>
@@ -67,7 +81,8 @@ class App extends Component {
 
 App.propTypes = {
   appName: PropTypes.string.isRequired,
-  open: PropTypes.bool
+  open: PropTypes.bool,
+  cards: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

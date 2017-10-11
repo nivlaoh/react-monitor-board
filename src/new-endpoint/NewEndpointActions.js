@@ -1,18 +1,25 @@
 import types from './NewEndpointTypes';
 
-const addNew = endPoint => ({
-	type: types.SUBMIT_NEW_ENDPOINT,
-	endPoint
-});
+const addNew = (props, history) => {
+	history.push('/');
+	return ({
+		type: types.SUBMIT_NEW_ENDPOINT,
+		endpointName: props.endpointName,
+		endpointVal: props.endpointVal
+	});
+};
 
 const cancelNew = () => ({
 	type: types.CANCEL_NEW_ENDPOINT
 });
 
-const updateVal = (e) => ({
-	type: 'update',
-	endpointVal: e.target.value
-});
+const updateVal = (e) => {
+	return ({
+		type: types.UPDATE_FIELD,
+		fieldName: e.target.id,
+		fieldValue: e.target.value
+	});
+};
 
 export default {
 	addNew,

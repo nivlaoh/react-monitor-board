@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createStore } from 'redux';
@@ -7,6 +8,7 @@ import { createStore } from 'redux';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import NewEndpointReducers from './new-endpoint/NewEndpointReducers';
 
 const defaultState = {
 	appName: 'Monitor-app',
@@ -32,8 +34,22 @@ const defaultState = {
 			'Yellow',
 			'Blue'
 		]
-	}
+	},
+	cards: [
+		{
+			checked: true,
+			actions: null,
+			data: {}
+		},
+		{
+			checked: false,
+			actions: null,
+			data: {}
+		}
+	]
 };
+defaultState.cards[0].data = defaultState.data;
+defaultState.cards[1].data = defaultState.data;
 
 const reducer = (state = defaultState, action) => {
 	switch (action.type) {
@@ -45,22 +61,17 @@ const reducer = (state = defaultState, action) => {
 			return Object.assign({}, state, {
 				open: !state.open
 			});
-		case 'submit':
-			console.log('here', action);
-			return Object.assign({}, state, {
-				page: '/'
-			});
-		case 'update':
-			console.log('there', action);
-			return Object.assign({}, state, {
-				endpointVal: action.endpointVal
-			});
 		default:
 	}
 	return state;
 };
 
-const store = createStore(reducer);
+const mainReducer = combineReducers({
+	reducer,
+	newEndpoint: NewEndpointReducers
+});
+
+const store = createStore(mainReducer);
 
 ReactDOM.render(
 	<Provider store={store}>
