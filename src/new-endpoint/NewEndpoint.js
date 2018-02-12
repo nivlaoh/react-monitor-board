@@ -1,68 +1,127 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router';
+import NumberFormat from 'react-number-format';
+import { Route, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { PropTypes } from 'prop-types';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import Card, { CardActions, CardHeader, CardContent } from 'material-ui/Card';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import { withStyles } from 'material-ui/styles';
 
 import './NewEndpoint.css';
 import NewEndpointActions from './NewEndpointActions';
 
-const mapStateToProps = state => ({
-	endpointName: state.newEndpoint.endpointName,
-	endpointVal: state.newEndpoint.endpointVal,
-	cards: state.newEndpoint.cards,
-	navigate: state.newEndpoint.navigate
+const mapStateToProps = (state, props) => ({
+  id: props.location.state ? props.location.state.id : -1,
+  endpointName: state.newEndpoint.endpointName,
+  endpointVal: state.newEndpoint.endpointVal,
+  endpointDesc: state.newEndpoint.endpointDesc,
 });
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators(NewEndpointActions, dispatch)
+  actions: bindActionCreators(NewEndpointActions, dispatch),
 });
 
-const Test = ({title, history, props}) => (
-	<FlatButton primary={true} label="Add"
-		onClick={props.actions.addNew.bind(this, props, history)} />
+const ButtonComponent = ({ history, props }) => (
+  <Button
+    variant="raised"
+    color="primary"
+    primary="true"
+    onClick={props.actions.addNew.bind(this, props, history)}
+  >
+    Add
+  </Button>
 );
 
-const TestComponent = (comProps) => (
-	<Route path="/" render={(props) => <Test props={comProps} {...props} />} />
+const ButtonRoute = comProps => (
+  <Route path="/" render={props => <ButtonComponent props={comProps} {...props} />} />
 );
 
-export class NewEndpoint extends Component {
-	render() {
-		const {
-			endpointName,
-			endpointVal,
-			actions
-		} = this.props;
-		return (
-			<div className="dashboard-container">
-				<Card className="dashboard-card">
-					<CardHeader title="New Endpoint" subtitle="Add an endpoint to monitor" />
-					<CardText>
-						<TextField id="endpointName" value={endpointName} hintText="Name of endpoint" floatingLabelText="Endpoint Name"
-							onChange={actions.updateVal.bind(this)} />
+const styles = theme => ({
+  textField: {
+    marginRight: theme.spacing.unit,
+    width: '45%',
+  },
+});
 
-						<TextField id="endpointVal" value={endpointVal} hintText="Endpoint IP Address" floatingLabelText="IP Address"
-							onChange={actions.updateVal.bind(this)} />
-					</CardText>
-					<CardActions style={{'textAlign':'right'}}>
-						<FlatButton label="Cancel" onClick={this.props.cancelNew} />
-						<TestComponent {...this.props} />
-					</CardActions>
-				</Card>
-			</div>
-		);
-	}
+class NewEndpoint extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      endpointName,
+      endpointVal,
+      endpointDesc,
+      actions,
+      history,
+      classes,
+    } = this.props;
+    console.log(this.props.id);
+    return (
+      <div className="dashboard-container">
+        <Card className="dashboard-card">
+          <CardHeader title="New Endpoint" subtitle="Add an endpoint to monitor" />
+          <CardContent>
+            <TextField
+              id="endpointName"
+              value={endpointName}
+              placeholder="Name of endpoint"
+              label="Endpoint Name"
+              onChange={actions.updateVal}
+              margin="normal"
+              className={classes.textField}
+            />
+            <NumberFormat
+              id="endpointVal"
+              value={endpointVal}
+              customInput={TextField}
+              label="IP Address"
+              format="###.###.###.###"
+              mask="_"
+              onChange={actions.updateVal}
+              className={classes.textField}
+            />
+            <TextField
+              id="endpointDesc"
+              value={endpointDesc}
+              placeholder="Description of endpoint"
+              label="Endpoint Description"
+              multiline
+              rows="3"
+              rowsMax="5"
+              onChange={actions.updateVal}
+              margin="normal"
+              fullWidth
+            />
+          </CardContent>
+          <CardActions style={{ textAlign: 'right' }}>
+            <Button onClick={() => history.push('/')}>
+            Cancel
+            </Button>
+            <ButtonRoute {...this.props} />
+          </CardActions>
+        </Card>
+      </div>
+    );
+  }
 }
 
-NewEndpoint.propTypes = {
-	endpointName: PropTypes.string,
-	endpointVal: PropTypes.string,
-	cards: PropTypes.array.isRequired,
-	navigate: PropTypes.bool
+NewEndpoint.defaultProps = {
+  id: -1,
+  endpointName: null,
+  endpointVal: null,
+  endpointDesc: null,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewEndpoint);
+NewEndpoint.propTypes = {
+  id: PropTypes.number,
+  endpointName: PropTypes.string,
+  endpointVal: PropTypes.string,
+  endpointDesc: PropTypes.string,
+  classes: PropTypes.object,
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(NewEndpoint)));

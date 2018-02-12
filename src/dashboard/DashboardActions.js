@@ -1,14 +1,14 @@
 import types from './DashboardTypes';
 
 const open = () => ({
-	type: types.OPEN
+  type: types.OPEN,
 });
 
 const check = () => ({
-	type: types.CHECK
+  type: types.CHECK,
 });
 
 export default {
-	open,
-	check
+  open,
+  check,
 };

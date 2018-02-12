@@ -1,3 +1,20 @@
 .dashboard-card {
 	flex: 0 1 32%;
+	margin-bottom: 20px;
+	transition: all 0.2s ease-in-out;
+}
+.dashboard-card + .dashboard-card {
+	margin-left: 15px;
+}
+.dashboard-card .header-row {
+	display: flex;
+	justify-content: space-between;
+}
+.header-row .title {
+	margin-left: 20px;
+	margin-top: 15px;
+	font-weight: bold;
+}
+.material-icons.grey600 {
+	color: #757575;
 }

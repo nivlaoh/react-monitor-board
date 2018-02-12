@@ -1,40 +1,61 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card';
+import Button from 'material-ui/Button';
 
 import './Dashboard.css';
 import DashboardActions from './DashboardActions';
-import DashboardCard from '../dashboard-card/Card';
+import DashboardCardList from '../dashboard-card/CardList';
 
-const mapStateToProps = state => {
-	console.log('see state', state);
-	return ({
-		endpointName: state.newEndpoint.endpointName,
-		endpointVal: state.newEndpoint.endpointVal,
-		cards: state.newEndpoint.cards
-	});
+const mapStateToProps = (state) => {
+  console.log('see state', state);
+  return ({
+    cards: state.newEndpoint.cards,
+  });
 };
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators(DashboardActions, dispatch)
+  actions: bindActionCreators(DashboardActions, dispatch),
 });
 
 class Dashboard extends Component {
-	render() {
-
-		return (
-			<div className="dashboard-container">
-				{this.props.cards.map((row, i) =>
-					<DashboardCard key={i} {...row} {...this.props} />
-				)}
-			</div>
-		);
-	}
+  render() {
+    const {
+      cards,
+      history,
+    } = this.props;
+    return (
+      <div className="dashboard-container">
+        <DashboardCardList items={cards} />
+        { cards.length === 0 &&
+        <Card>
+          <CardHeader title="No Endpoints" subtitle="Start monitoring now" />
+          <CardContent>
+          Click on the plus icon to add
+          </CardContent>
+          <CardActions style={{ textAlign: 'right' }}>
+            <Button variant="raised" color="primary" primary="true" onClick={() => history.push('/new')}>
+            Add
+            </Button>
+          </CardActions>
+        </Card>
+        }
+      </div>
+    );
+  }
 }
 
-Dashboard.propTypes = {
-  cards: PropTypes.array.isRequired
+Dashboard.defaultProps = {
+  cards: null,
+  history: {},
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+Dashboard.propTypes = {
+  cards: PropTypes.arrayOf(PropTypes.object),
+  history: PropTypes.shape({}),
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard));
